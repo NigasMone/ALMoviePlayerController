@@ -40,7 +40,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 @interface ALMoviePlayerControls () <ALAirplayViewDelegate, ALButtonDelegate> {
     @private
-    int windowSubviews;
+    NSUInteger windowSubviews;
 }
 
 @property (nonatomic, weak) ALMoviePlayerController *moviePlayer;
@@ -155,7 +155,8 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
         [_topBar addSubview:_timeRemainingLabel];
         
         _fullscreenButton = [[ALButton alloc] init];
-        [_fullscreenButton setTitle:@"Done" forState:UIControlStateNormal];
+        [_fullscreenButton setTitle:@"全屏" forState:UIControlStateNormal];
+        [_fullscreenButton setTitle:@"退出全屏" forState:UIControlStateNormal];
         [_fullscreenButton setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
         _fullscreenButton.titleLabel.shadowOffset = CGSizeMake(1.f, 1.f);
         [_fullscreenButton.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
@@ -227,8 +228,6 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 - (void)resetViews {
     [self stopDurationTimer];
     [self nilDelegates];
-    [_activityBackgroundView removeFromSuperview];
-    [_activityIndicator removeFromSuperview];
     [_topBar removeFromSuperview];
     [_bottomBar removeFromSuperview];
 }
@@ -239,7 +238,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
     _fullscreenButton.delegate = nil;
     _seekForwardButton.delegate = nil;
     _seekBackwardButton.delegate = nil;
-    _scaleButton.delegate = nil;
+    _scaleButton.delegate = self;
 }
 
 # pragma mark - Setters

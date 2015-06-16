@@ -26,9 +26,9 @@
 + (CGSize)sizeInOrientation:(UIInterfaceOrientation)orientation {
     CGSize size = [UIScreen mainScreen].bounds.size;
     UIApplication *application = [UIApplication sharedApplication];
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
-        size = CGSizeMake(size.height, size.width);
-    }
+//    if (UIInterfaceOrientationIsLandscape(orientation)) {
+//        size = CGSizeMake(size.height, size.width);
+//    }
     if (!application.statusBarHidden && [UIDevice iOSVersion] < 7.0) {
         size.height -= MIN(application.statusBarFrame.size.width, application.statusBarFrame.size.height);
     }
@@ -55,10 +55,10 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
     return [self initWithFrame:CGRectZero];
 }
 
-- (id)initWithContentURL:(NSURL *)url {
-    [[NSException exceptionWithName:@"ALMoviePlayerController Exception" reason:@"Set contentURL after initialization." userInfo:nil] raise];
-    return nil;
-}
+//- (id)initWithContentURL:(NSURL *)url {
+//    [[NSException exceptionWithName:@"ALMoviePlayerController Exception" reason:@"Set contentURL after initialization." userInfo:nil] raise];
+//    return nil;
+//}
 
 - (id)initWithFrame:(CGRect)frame {
     if ( (self = [super init]) ) {
@@ -202,14 +202,26 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
             movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.width - movieBackgroundPadding*2, backgroundFrame.size.height - movieBackgroundPadding*2);
             break;
         case UIInterfaceOrientationLandscapeLeft:
-            angle = - M_PI_2;
-            backgroundFrame = CGRectMake([self statusBarHeightInOrientation:orientation] - movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
-            movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            if (UIDevice.iOSVersion <8) {
+                angle = - M_PI_2;
+                backgroundFrame = CGRectMake([self statusBarHeightInOrientation:orientation] - movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
+                movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            } else {
+                angle = 2*M_PI;
+                backgroundFrame = CGRectMake(0, 0, windowSize.width, windowSize.height);
+                movieFrame = CGRectMake(0, movieBackgroundPadding, windowSize.width, windowSize.height-movieBackgroundPadding);
+            }
             break;
         case UIInterfaceOrientationLandscapeRight:
-            angle = M_PI_2;
-            backgroundFrame = CGRectMake(-movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
-            movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            if (UIDevice.iOSVersion <8) {
+                angle = M_PI_2;
+                backgroundFrame = CGRectMake(-movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
+                movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            } else {
+                angle = 2*M_PI;
+                backgroundFrame = CGRectMake(0, 0, windowSize.width, windowSize.height);
+                movieFrame = CGRectMake(0, movieBackgroundPadding, windowSize.width, windowSize.height-movieBackgroundPadding);
+            }
             break;
         case UIInterfaceOrientationPortrait:
         default:
